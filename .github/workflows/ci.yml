@@ -1,0 +1,41 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: mylocalon-sdk-node
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mylocalon-docs
+          path: docs
+      # The e2e suite builds and drives the real gateway.
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mylocalon-gateway
+          path: mylocalon-gateway
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: mylocalon-gateway/go.mod
+          cache-dependency-path: mylocalon-gateway/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: mylocalon-sdk-node/package-lock.json
+      - name: install, typecheck, test, build
+        working-directory: mylocalon-sdk-node
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+          npm run build
+          node -e "require('./dist/cjs/index.js')"

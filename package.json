@@ -1,0 +1,47 @@
+{
+  "name": "@mylocalon/sdk-node",
+  "version": "0.1.0",
+  "description": "mylocalon tunnel SDK for Node.js \u2014 reference implementation of the Tunnel Protocol v1",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "module": "./dist/index.js",
+  "homepage": "https://mylocalon.com",
+  "keywords": [
+    "tunnel",
+    "localhost",
+    "ngrok-alternative",
+    "webhooks",
+    "dev-tools"
+  ]
+}
